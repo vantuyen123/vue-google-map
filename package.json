@@ -1,0 +1,29 @@
+{
+  "name": "vue-google-maps",
+  "version": "0.4.0",
+  "private": true,
+  "description": "Vue 3 - Simple Google Maps Demo",
+  "author": "José Miguel Gonçalves <jose.goncalves@inov.pt>",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
+    "clean": "rimraf dist node_modules"
+  },
+  "dependencies": {
+    "google": "^2.1.0",
+    "google-maps": "^4.3.3",
+    "marker": "^0.1.2",
+    "vue": "^3.4.38",
+    "vue3-google-map": "^0.21.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.1.2",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.27.0",
+    "rimraf": "^5.0.10",
+    "vite": "^5.4.1"
+  }
+}
