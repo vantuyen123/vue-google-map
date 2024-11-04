@@ -18,7 +18,7 @@ const mapInstance = ref(null);
 
 function getBoundBox(Polygon) {
 	const bounds = new google.maps.LatLngBounds();
-	const path = Polygon.getPath();
+	const path = Polygon.latLngs.Eg.reduce((e1, e2) => (e1.length > e2.length ? e1 : e2));
 	path.forEach(function(element) {
 		bounds.extend(element)
 	})
@@ -66,14 +66,14 @@ const countryCoords = countries.map((e) => {
 })
 
 const countryPolygons = countryCoords.map((coords) => {
-	return {
+	return new google.maps.Polygon({
 		paths: coords,
 		strokeColor: '#FF0000',
 		strokeOpacity: 0.8,
 		strokeWeight: 2,
 		fillColor: '#FF0000',
 		fillOpacity: 0.35,
-	}
+	})
 })
 
 const capitals = jsonDataCapitals.features
