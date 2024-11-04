@@ -1,22 +1,11 @@
 <script setup>
 import { ref } from 'vue';
-import jsonData from '@/assets/countries.geo.json';
+import jsonDataCapitals from '@/assets/capitals.geo.json';
+import jsonDataCountries from '@/assets/countries.geo.json';
 import { GoogleMap, AdvancedMarker, InfoWindow, Polygon } from 'vue3-google-map';
 
 const center = { lat: 40.689247, lng: -74.044502 };
 const pinOptions = { background: '#f9350c' };
-const markers = [
-	{ lat: 36.7783, lng: -119.4179, title: 'California, USA' },
-	{ lat: 51.5074, lng: -0.1278, title: 'London, UK' },
-	{ lat: 28.6139, lng: 77.2090, title: 'New Delhi, India' },
-	{ lat: 35.6895, lng: 139.6917, title: 'Tokyo, Japan' },
-	{ lat: 4.6102, lng: -74.0818, title: 'Bogotá, Colombia' },
-	{ lat: 52.3740, lng: 4.8897, title: 'Amsterdam, Netherlands' },
-	{ lat: 51.1657, lng: 10.4515, title: 'Berlin, Germany' },
-	{ lat: 55.7558, lng: 37.6173, title: 'Moscow, Russia' },
-	{ lat: 41.9028, lng: 12.4964, title: 'Rome, Italy' },
-	{ lat: 34.0522, lng: -118.2437, title: 'Los Angeles, USA' }
-];
 
 const bounds = {
 	north: 85,
@@ -55,7 +44,8 @@ function handleZoneClick(countryPolygon) {
 	}
 }
 
-const countries = jsonData.features
+
+const countries = jsonDataCountries.features
 const countryCoords = countries.map((e) => {
 	if(e.geometry.type=="Polygon"){
 		let polygon = e.geometry.coordinates[0].map((e2) => {
@@ -63,6 +53,7 @@ const countryCoords = countries.map((e) => {
 		})
 		return polygon
 	} else {
+		if(e.id=="ATA") return;
 		let polygons = []
 		let coords = e.geometry.coordinates
 		coords.forEach(subPolygon => {
@@ -83,6 +74,11 @@ const countryPolygons = countryCoords.map((coords) => {
 		fillColor: '#FF0000',
 		fillOpacity: 0.35,
 	}
+})
+
+const capitals = jsonDataCapitals.features
+const markers = capitals.map((e) => {
+	return  { lat: e.geometry.coordinates[1], lng: e.geometry.coordinates[0], title: e.properties.city + ', ' + e.properties.country}
 })
 </script>
 
