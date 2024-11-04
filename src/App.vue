@@ -44,7 +44,6 @@ function handleZoneClick(countryPolygon) {
 	}
 }
 
-
 const countries = jsonDataCountries.features
 const countryCoords = countries.map((e) => {
 	if(e.geometry.type=="Polygon"){
