@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import { GoogleMap, AdvancedMarker ,InfoWindow} from 'vue3-google-map';
+import jsonData from '@/assets/countries.geo.json';
+import { GoogleMap, AdvancedMarker, InfoWindow, Polygon } from 'vue3-google-map';
 
 const center = { lat: 40.689247, lng: -74.044502 };
 const pinOptions = { background: '#f9350c' };
@@ -26,6 +27,15 @@ const bounds = {
 
 const mapInstance = ref(null);
 
+function getBoundBox(Polygon) {
+	const bounds = new google.maps.LatLngBounds();
+	const path = Polygon.getPath();
+	path.forEach(function(element) {
+		bounds.extend(element)
+	})
+	return bounds;
+}
+
 function handleMarkerClick(marker) {
 	if(mapInstance.value){
 		mapInstance.value.map.setCenter({ lat: marker.lat, lng: marker.lng });
@@ -38,6 +48,42 @@ function handleMarkerClick(marker) {
 		});
 	}
 }
+
+function handleZoneClick(countryPolygon) {
+	if(mapInstance.value){
+		mapInstance.value.map.fitBounds(getBoundBox(countryPolygon))
+	}
+}
+
+const countries = jsonData.features
+const countryCoords = countries.map((e) => {
+	if(e.geometry.type=="Polygon"){
+		let polygon = e.geometry.coordinates[0].map((e2) => {
+			return  { lat: e2[1], lng: e2[0]}
+		})
+		return polygon
+	} else {
+		let polygons = []
+		let coords = e.geometry.coordinates
+		coords.forEach(subPolygon => {
+			polygons.push(subPolygon[0].map((e3) => {
+				return  { lat: e3[1], lng: e3[0]}
+			}))
+		});
+		return polygons
+	}
+})
+
+const countryPolygons = countryCoords.map((coords) => {
+	return {
+		paths: coords,
+		strokeColor: '#FF0000',
+		strokeOpacity: 0.8,
+		strokeWeight: 2,
+		fillColor: '#FF0000',
+		fillOpacity: 0.35,
+	}
+})
 </script>
 
 <template>
@@ -56,6 +102,12 @@ function handleMarkerClick(marker) {
 		:max-zoom="8"
 		@map-loaded="(map) => { mapInstance.value = map }"
 	>
+		<Polygon 
+			v-for="(countryPolygon, index) in countryPolygons"
+			:key="index"
+			:options="countryPolygon"
+			@click="handleZoneClick(countryPolygon)"
+		/>
 		<AdvancedMarker
 			v-for="(marker, index) in markers"
 			:key="index"
